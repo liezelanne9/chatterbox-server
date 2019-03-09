@@ -1,4 +1,3 @@
-
 var messages = {results: []};
 var defaultCorsHeaders = {
   'access-control-allow-origin': '*',
@@ -12,17 +11,12 @@ var defaultCorsHeaders = {
 // if requestedFil === -1 => statusCode = 404
 
 /*************************************************************
-
 You should implement your request handler function in this file.
-
 requestHandler is already getting passed to http.createServer()
 in basic-server.js, but it won't work as is.
-
 You'll have to figure out a way to export this function from
 this file and include it in basic-server.js so that it actually works.
-
 *Hint* Check out the node module documentation at http://nodejs.org/api/modules.html.
-
 **************************************************************/
 
 var requestHandler = function(request, response) {
@@ -44,6 +38,7 @@ var requestHandler = function(request, response) {
   console.log('Serving request type ' + request.method + ' for url ' + request.url);
   var statusCode = 200;
   var headers = defaultCorsHeaders;
+  headers['Content-Type'] = 'application/json';
 
   if (!request.url.includes('classes/messages')) {
     statusCode = 404;
@@ -59,7 +54,7 @@ var requestHandler = function(request, response) {
   //
   // You will need to change this if you are sending something
   // other than plain text, like JSON or HTML.
-  headers['Content-Type'] = 'application/json'; // tells browser how to interpret the data we're returning
+  // tells browser how to interpret the data we're returning
 
   // .writeHead() writes to the request line and headers of the response,
   // which includes the status and all headers.
@@ -73,23 +68,27 @@ var requestHandler = function(request, response) {
   // Calling .end "flushes" the response's internal buffer, forcing
   // node to actually send all the data over to the client.
   if (request.method === 'GET') {
-
     response.writeHead(statusCode, headers);
     response.end(JSON.stringify(messages));
-  }
-  if (request.method === 'POST') {
+
+  } else if (request.method === 'POST') {
     statusCode = 201;
     response.writeHead(statusCode, headers);
+
     let body = [];
     request.on('data', (chunk) => {
       body.push(chunk);
     }).on('end', () => {
       body = Buffer.concat(body).toString();
       messages.results.push(JSON.parse(body));
-      response.end();
-    // at this point, `body` has the entire request body stored in it as a string
+      response.end('1');
     });
-  } 
+  } else {
+    response.writeHead(statusCode, headers);
+    response.end('12345');
+  }
+  // response.end();
+  // console.log('help im really stuck');
 };
 
 // These headers will allow Cross-Origin Resource Sharing (CORS).
