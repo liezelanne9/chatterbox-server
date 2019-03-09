@@ -45,7 +45,7 @@ var requestHandler = function(request, response) {
   var statusCode = 200;
   var headers = defaultCorsHeaders;
 
-  if(!request.url.includes('classes/messages')) {
+  if (!request.url.includes('classes/messages')) {
     statusCode = 404;
     response.writeHead(statusCode, headers);
     response.end();
@@ -85,7 +85,7 @@ var requestHandler = function(request, response) {
       body.push(chunk);
     }).on('end', () => {
       body = Buffer.concat(body).toString();
-     messages.results.push(JSON.parse(body));
+      messages.results.push(JSON.parse(body));
       response.end();
     // at this point, `body` has the entire request body stored in it as a string
     });
